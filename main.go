@@ -1,5 +1,11 @@
 package main
 
+import (
+	"fmt"
+
+	"github.com/brianvoe/gofakeit"
+)
+
 type Fields struct {
 	NumberOfFields int
 	FieldNames     []string
@@ -8,43 +14,42 @@ type Fields struct {
 }
 
 func main() {
-	// This is a placeholder for the main function.
-	// You can implement the logic to take user input for number of fields,
-	// their types, and then generate random data accordingly.
+	newF := &Fields{}
+	newF.GetFieldsFromUser()
+	newF.GenerateRandomData()
 
-	// Example:
-	// 1. Ask user how many fields they want to create.
-	// 2. For each field, ask for the type (string, int, float, etc.).
-	// 3. Generate random data based on the type and number of fields.
-
-	// Note: Actual implementation will depend on the specific requirements and libraries used.
+	for i := range newF.NumberOfFields {
+		fmt.Printf("%v\n", newF.FieldValues[i])
+	}
 }
 
 func (f *Fields) GetFieldsFromUser() {
-	// This function will interact with the user to get the number of fields,
-	// their names, and types. You can use "fmt.Scanln" or similar functions
-	// to read user input.
+	fmt.Print("Enter number of fields: ")
+	fmt.Scanln(&f.NumberOfFields)
 
-	// Example:
-	// fmt.Println("Enter number of fields:")
-	// fmt.Scanln(&f.NumberOfFields)
-	// Then loop to get field names and types.
+	f.FieldNames = make([]string, f.NumberOfFields)
+	f.FieldTypes = make([]string, f.NumberOfFields)
+
+	for v := range f.NumberOfFields {
+		fmt.Printf("Enter name of field %d: ", v+1)
+		fmt.Scanln(&f.FieldNames[v])
+		fmt.Printf("Enter valid type for the field %d (str/int/float):", v+1)
+		fmt.Scanln(&f.FieldTypes[v])
+	}
+	fmt.Println("Preparing field values....")
 }
 
 func (f *Fields) GenerateRandomData() {
-	// This function will generate random data for each field based on its type.
-	// You can use libraries like "math/rand" for generating random numbers,
-	// and "github.com/brianvoe/gofakeit/v6" for generating fake data.
+	f.FieldValues = make([]any, f.NumberOfFields)
 
-	// Example:
-	// for i := 0; i < f.NumberOfFields; i++ {
-	//     switch f.FieldTypes[i] {
-	//     case "string":
-	//         f.FieldValues[i] = gofakeit.Name()
-	//     case "int":
-	//         f.FieldValues[i] = gofakeit.Number(1, 100)
-	//     case "float":
-	//         f.FieldValues[i] = gofakeit.Float64()
-	//     }
-	// }
+	for i := 0; i < f.NumberOfFields; i++ {
+		switch f.FieldTypes[i] {
+		case "str":
+			f.FieldValues[i] = gofakeit.Name()
+		case "int":
+			f.FieldValues[i] = gofakeit.Number(1, 100)
+		case "float":
+			f.FieldValues[i] = gofakeit.Float64()
+		}
+	}
 }
